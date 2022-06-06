@@ -1,7 +1,7 @@
 -module(act5_3).
 -export([lee/1]).
 -export([operacion/2]).
--export([imprimir/2]).
+-export([imprimir/3]).
 -import(lists,[nth/2]). 
 -import(string, [slice/3]).
 -import(string, [len/1]).
@@ -11,12 +11,13 @@ lee(File) ->
     %Guardamos nombres del archivo de entrada y salida
     FileIn = File ++ "1.in", 
     FileOut = File ++ "1.out",
+    {ok, SIn} = file:open(FileIn, read), %Abrimos archivo de entrada,
+    {ok, SOut} = file:open(FileOut, [append]),
 
-    operacion(FileIn,FileOut).
+    operacion(SIn, SOut).
 
-operacion(FileIn,FileOut) -> 
-    {ok, SIn} = file:open(FileIn, read), %Abrimos archivo de entrada
-
+operacion(SIn,SOut) -> 
+    
     Txt = io:get_line(SIn, ''), %Obtenemos primera linea del archivo
 
     List1 = string:split(Txt, " ", all), %Convertimos cada elemento de la linea en una misma lista
@@ -24,7 +25,7 @@ operacion(FileIn,FileOut) ->
     
     PrimerInt = list_to_integer(nth(1,List1)), %Convertimos primer elemento de la lista (primer numero) de string a int
 
-    Operador = nth(2,List1), %Guardamos el segundo elemento de la lista (operador) como string en variable Operador
+    Operador = nth(2,List1), %Guardamos el segundo elemento de la lista (operador) como string 
 
     %Convertimos tercer elemento de la lista (segundo numero) de string a int quitando el backslash n
     Length = len(nth(3,List1)),
@@ -39,11 +40,11 @@ operacion(FileIn,FileOut) ->
         "%" -> Respuesta = PrimerInt rem SegundoInt
     end,
 
-    imprimir(Respuesta,FileOut).
+    imprimir(SIn, Respuesta,SOut).
 
 %Imprimimos respuesta en archivo de salida
-imprimir(Respuesta,FileOut) ->
-    {ok, SOut} = file:open(FileOut, [write]),
-    io:format(SOut,"~p~n", [Respuesta]).
+imprimir(SIn, Respuesta,SOut) ->
+    io:format(SOut,"~p~n", [Respuesta]),
+    operacion(SIn, SOut).
     
 
