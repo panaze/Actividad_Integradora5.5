@@ -10,13 +10,13 @@
 -import(string, [slice/3]).
 -import(string, [len/1]).
 
-%O()
+%O(1)
 run() ->
     NumArchivo =1,
     runSeq(NumArchivo, "Secuencial"),
     runConc().
 
-%O()
+%O(1)
 runConc()->
     T1 = time(),
     spawn(act5_3, lee, [1, "Concurrente", T1]),
@@ -24,7 +24,7 @@ runConc()->
     spawn(act5_3, lee, [3, "Concurrente", T1]),
     spawn(act5_3, lee, [4, "Concurrente", T1]). 
 
-%O()
+%O(n)
 runSeq(NumArchivo, Filtro) ->
     if
         Filtro == "Concurrente" -> io:format("");
@@ -33,7 +33,7 @@ runSeq(NumArchivo, Filtro) ->
             lee(NumArchivo, "Secuencial", T1)
     end.
 
-%O(1)
+%O(n)
 lee(NumArchivo, Filtro, T1) ->
     if 
         NumArchivo >4 -> io:format("");
@@ -45,7 +45,7 @@ lee(NumArchivo, Filtro, T1) ->
             operacion(SIn, SOut, NumArchivo, Filtro, T1) 
     end.
 
-%O(1)
+%O(n)
 operacion(SIn,SOut, NumArchivo, Filtro, T1) -> 
     Txt = io:get_line(SIn, ''),
     if 
@@ -60,7 +60,6 @@ operacion(SIn,SOut, NumArchivo, Filtro, T1) ->
         true ->  %Obtenemos primera linea del archivo
 
             List1 = string:split(Txt, " ", all), %Convertimos cada elemento de la linea en una misma lista
-
             
             PrimerInt = list_to_integer(nth(1,List1)), %Convertimos primer elemento de la lista (primer numero) de string a int
 
@@ -83,7 +82,7 @@ operacion(SIn,SOut, NumArchivo, Filtro, T1) ->
     end.
     
    
-%O()
+%O(n)
 %Imprimimos respuesta en archivo de salida
 imprimir(SIn, Respuesta,SOut, NumArchivo, Filtro, T1) ->
     io:format(SOut,"~s~n", [integer_to_list(Respuesta)]),
