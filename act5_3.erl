@@ -10,7 +10,7 @@
 -import(string, [slice/3]).
 -import(string, [len/1]).
 
-%O(1)
+%O(n)
 run() ->
     NumArchivo =1,
     runSeq(NumArchivo, "Secuencial"),
