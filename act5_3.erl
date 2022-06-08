@@ -10,35 +10,30 @@
 -import(string, [slice/3]).
 -import(string, [len/1]).
 
-
+%O()
 run() ->
     NumArchivo =1,
     runSeq(NumArchivo, "Secuencial"),
     runConc().
 
-%O(n^4)
+%O()
 runConc()->
     T1 = time(),
-    io:format("Metodo Concurrente archivo: ~p~n", [1]),
     spawn(act5_3, lee, [1, "Concurrente", T1]),
-    io:format("Metodo Concurrente archivo: ~p~n", [2]), 
     spawn(act5_3, lee, [2, "Concurrente", T1]),
-    io:format("Metodo Concurrente archivo: ~p~n", [3]),
     spawn(act5_3, lee, [3, "Concurrente", T1]),
-    io:format("Metodo Concurrente archivo: ~p~n", [4]),
     spawn(act5_3, lee, [4, "Concurrente", T1]). 
 
-%O(1)
+%O()
 runSeq(NumArchivo, Filtro) ->
     if
         Filtro == "Concurrente" -> io:format("");
         true ->
             T1 = time(),
-            io:format("Metodo secuencial archivo: ~p~n", [NumArchivo]),
-            io:format("Tiempo inicial: ~p~n", [T1]),
             lee(NumArchivo, "Secuencial", T1)
     end.
 
+%O(1)
 lee(NumArchivo, Filtro, T1) ->
     if 
         NumArchivo >4 -> io:format("");
@@ -50,10 +45,13 @@ lee(NumArchivo, Filtro, T1) ->
             operacion(SIn, SOut, NumArchivo, Filtro, T1) 
     end.
 
+%O(1)
 operacion(SIn,SOut, NumArchivo, Filtro, T1) -> 
     Txt = io:get_line(SIn, ''),
     if 
         Txt == eof -> file:close(SIn), file:close(SOut),
+            io:format("Metodo " ++ Filtro ++ " archivo: ~p~n", [NumArchivo]),
+            io:format("Tiempo inicial: ~p~n", [T1]),
             T2 = time(),
             io:format("Tiempo final: ~p~n", [T2]),
             Diff = now_diff(T2, T1),
@@ -85,7 +83,7 @@ operacion(SIn,SOut, NumArchivo, Filtro, T1) ->
     end.
     
    
-
+%O()
 %Imprimimos respuesta en archivo de salida
 imprimir(SIn, Respuesta,SOut, NumArchivo, Filtro, T1) ->
     io:format(SOut,"~s~n", [integer_to_list(Respuesta)]),
